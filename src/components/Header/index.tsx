@@ -16,6 +16,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Props {
   /**
@@ -38,6 +39,8 @@ const menus: MenuProps[] = [
 const drawerWidth = 240;
 
 export default function DrawerAppBar(props: Props) {
+  const pathname = usePathname();
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -46,8 +49,8 @@ export default function DrawerAppBar(props: Props) {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "start" }}>
+      <Typography variant="h6" sx={{ my: 2, ml: 2 }}>
         Profile App
       </Typography>
       <Divider />
@@ -55,7 +58,15 @@ export default function DrawerAppBar(props: Props) {
         {menus.map((item) => (
           <Link key={item.label} href={item.path}>
             <ListItem disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemButton
+                sx={{
+                  textAlign: "start",
+                  color: item.path === pathname ? "#2f80cc" : "#000",
+                  ":hover": {
+                    color: "#2f80cc",
+                  },
+                }}
+              >
                 <ListItemText primary={item.label} />
               </ListItemButton>
             </ListItem>
@@ -89,10 +100,26 @@ export default function DrawerAppBar(props: Props) {
           >
             Profile App
           </Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Box
+            sx={{
+              display: { xs: "none", sm: "flex" },
+              flexDirection: "row",
+              gap: 1,
+            }}
+          >
             {menus.map((item) => (
               <Link key={item.label} href={item.path}>
-                <Button key={item.label} sx={{ color: "#fff" }}>
+                <Button
+                  key={item.label}
+                  sx={{
+                    color: item.path === pathname ? "#2f80cc" : "#fff",
+                    bgcolor: item.path === pathname ? "white" : "transparent",
+                    ":hover": {
+                      color: "#2f80cc",
+                      bgcolor: "white",
+                    },
+                  }}
+                >
                   {item.label}
                 </Button>
               </Link>
@@ -121,7 +148,7 @@ export default function DrawerAppBar(props: Props) {
         </Drawer>
       </nav>
       <Box component="main" sx={{ p: 3 }}>
-        <Toolbar />
+        {/* <Toolbar /> */}
       </Box>
     </Box>
   );

@@ -6,7 +6,6 @@ import {
   CardActions,
   CardContent,
   Button,
-  Typography,
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -16,6 +15,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { useGlobalState } from "@/utils/providers/GlobalStateContext";
+import { useRouter } from "next/navigation";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -30,10 +32,13 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function Form() {
+  const { setGlobalFormData } = useGlobalState();
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: "",
     age: "",
-    birthDate: "",
+    birthDate: null as Dayjs | null,
     tel: "",
     img: null as File | null,
   });
@@ -45,11 +50,14 @@ export default function Form() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleDateChange = (date: any) => {
-    setFormData({
-      ...formData,
-      tanggalLahir: date?.format("YYYY-MM-DD") || "",
-    });
+  const handleDateChange = (date: Dayjs | null) => {
+    if (date) {
+      const today = dayjs();
+      const years = today.diff(date, "year");
+      setFormData({ ...formData, birthDate: date, age: years.toString() });
+    } else {
+      setFormData({ ...formData, birthDate: null, age: "" });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,92 +66,178 @@ export default function Form() {
     }
   };
 
+  const validateForm = () => {
+    const errors: string[] = [];
+
+    if (!formData.name) errors.push("nama lengkap tidak boleh kosong.");
+    if (formData.name && formData.name.length < 3)
+      errors.push("nama lengkap harus memiliki setidaknya 3 karakter.");
+    if (/[^a-zA-Z\s]/.test(formData.name))
+      errors.push("nama lengkap hanya boleh mengandung huruf dan spasi.");
+
+    if (!formData.age) errors.push("umur tidak boleh kosong.");
+    const age = parseInt(formData.age, 10);
+    if (isNaN(age) || age <= 0)
+      errors.push("umur harus berupa angka positif yang valid.");
+
+    if (!formData.birthDate) errors.push("tanggal lahir tidak boleh kosong.");
+
+    if (!formData.tel) errors.push("nomor telepon tidak boleh kosong.");
+    if (formData.tel && formData.tel.length < 10)
+      errors.push("nomor telepon harus memiliki setidaknya 10 digit.");
+
+    if (!formData.img) errors.push("foto profil tidak boleh kosong.");
+    if (formData.img && formData.img.size > 5 * 1024 * 1024)
+      errors.push("ukuran file foto tidak boleh lebih dari 5 MB.");
+
+    return errors;
+  };
+
+  const handleReset = () => {
+    setFormData({
+      name: "",
+      age: "",
+      birthDate: null as Dayjs | null,
+      tel: "",
+      img: null as File | null,
+    });
+  };
+
   const handleSubmit = () => {
-    if (!formData.name || !formData.age || !formData.tel) {
-      alert("Please fill out all required fields.");
+    const errors = validateForm();
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
       return;
     }
 
-    console.log("Form Data Submitted:", formData);
-    alert("Form submitted successfully!");
+    const formattedData = {
+      ...formData,
+      birthDate: formData.birthDate?.format("YYYY-MM-DD") || "",
+    };
+
+    setGlobalFormData(formattedData);
+    console.log("form data submitted, local state:", formattedData);
+    alert("form berhasil disubmit!");
+    handleReset();
+    router.push("/about");
   };
 
-  const card = (
-    <>
-      <CardContent>
-        <TextField
-          fullWidth
-          id="name"
-          label="Nama Lengkap"
-          variant="filled"
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          fullWidth
-          id="age"
-          label="Umur"
-          variant="filled"
-          name="age"
-          type="number"
-          value={formData.age}
-          onChange={handleChange}
-          required
-        />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DatePicker"]}>
-            <DatePicker
-              label="Tanggal Lahir"
-              value={formData.birthDate || null}
-              onChange={handleDateChange}
-            />
-          </DemoContainer>
-        </LocalizationProvider>
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-        >
-          {formData.img ? formData.img.name : "Unggah Foto Profil"}
-          <VisuallyHiddenInput
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </Button>
-        <TextField
-          fullWidth
-          id="tel"
-          label="Nomor Telepon"
-          variant="filled"
-          name="tel"
-          value={formData.tel}
-          onChange={handleChange}
-          required
-        />
-      </CardContent>
-      <CardActions>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </CardActions>
-    </>
-  );
-
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <Box sx={{ minWidth: 275 }}>
-            <Card variant="outlined">{card}</Card>
-          </Box>
-        </div>
-      </main>
-    </div>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+        p: 3,
+      }}
+    >
+      <Card
+        sx={{
+          width: 400,
+          boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <CardContent
+          sx={{
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <TextField
+            fullWidth
+            id="name"
+            label="Nama Lengkap"
+            variant="filled"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                label="Tanggal Lahir"
+                value={formData.birthDate || null}
+                onChange={handleDateChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          <TextField
+            fullWidth
+            id="age"
+            label="Umur"
+            variant="filled"
+            name="age"
+            type="number"
+            value={formData.age}
+            onChange={handleChange}
+            disabled
+          />
+
+          <Button
+            component="label"
+            variant="contained"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              textTransform: "none",
+            }}
+          >
+            {formData.img ? formData.img.name : "Unggah Foto Profil"}
+            <VisuallyHiddenInput
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Button>
+          <TextField
+            fullWidth
+            id="tel"
+            label="Nomor Telepon"
+            variant="filled"
+            name="tel"
+            value={formData.tel}
+            onChange={handleChange}
+            required
+          />
+        </CardContent>
+        <CardActions sx={{ p: 3, justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="success"
+            fullWidth
+            onClick={handleSubmit}
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Submit
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            fullWidth
+            onClick={handleReset}
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Reset
+          </Button>
+        </CardActions>
+      </Card>
+    </Box>
   );
 }
