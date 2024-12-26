@@ -34,6 +34,7 @@ Open [http://localhost:3000](http://localhost:3000) with browser.
 
 ## Folder Structure
 
+```bash
 📦src
 ┣ 📂app
 ┃ ┣ 📂about
@@ -51,3 +52,4 @@ Open [http://localhost:3000](http://localhost:3000) with browser.
 ┃ ┗ 📂providers
 ┃ ┃ ┣ 📜GlobalStateContext.tsx
 ┃ ┃ ┗ 📜progress-bar-provider.tsx
+```
