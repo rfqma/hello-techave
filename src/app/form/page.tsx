@@ -131,7 +131,6 @@ export default function Form() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f5f5",
         p: 3,
       }}
     >
