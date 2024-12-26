@@ -7,6 +7,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import DrawerAppBar from "@/components/Header";
 import { GlobalStateProvider } from "@/utils/providers/GlobalStateContext";
+import ProgressBarProviders from "@/utils/providers/progress-bar-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +34,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalStateProvider>
-          <DrawerAppBar />
-          {children}
-        </GlobalStateProvider>
+        <ProgressBarProviders>
+          <GlobalStateProvider>
+            <DrawerAppBar />
+            {children}
+          </GlobalStateProvider>
+        </ProgressBarProviders>
       </body>
     </html>
   );

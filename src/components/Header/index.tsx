@@ -61,9 +61,9 @@ export default function DrawerAppBar(props: Props) {
               <ListItemButton
                 sx={{
                   textAlign: "start",
-                  color: item.path === pathname ? "#2f80cc" : "#000",
+                  color: item.path === pathname ? "#275fa4" : "#303030",
                   ":hover": {
-                    color: "#2f80cc",
+                    color: "#275fa4",
                   },
                 }}
               >
@@ -82,7 +82,7 @@ export default function DrawerAppBar(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav">
+      <AppBar sx={{ bgcolor: "#275fa4" }} component="nav">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -112,10 +112,10 @@ export default function DrawerAppBar(props: Props) {
                 <Button
                   key={item.label}
                   sx={{
-                    color: item.path === pathname ? "#2f80cc" : "#fff",
+                    color: item.path === pathname ? "#275fa4" : "#fff",
                     bgcolor: item.path === pathname ? "white" : "transparent",
                     ":hover": {
-                      color: "#2f80cc",
+                      color: "#275fa4",
                       bgcolor: "white",
                     },
                   }}

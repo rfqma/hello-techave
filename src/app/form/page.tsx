@@ -154,7 +154,7 @@ export default function Form() {
             fullWidth
             id="name"
             label="Nama Lengkap"
-            variant="filled"
+            variant="outlined"
             name="name"
             type="text"
             value={formData.name}
@@ -164,6 +164,7 @@ export default function Form() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               <DatePicker
+                className="w-full"
                 label="Tanggal Lahir"
                 value={formData.birthDate || null}
                 onChange={handleDateChange}
@@ -191,6 +192,7 @@ export default function Form() {
               display: "flex",
               justifyContent: "center",
               textTransform: "none",
+              bgcolor: "#275fa4",
             }}
           >
             {formData.img ? formData.img.name : "Unggah Foto Profil"}
@@ -204,7 +206,7 @@ export default function Form() {
             fullWidth
             id="tel"
             label="Nomor Telepon"
-            variant="filled"
+            variant="outlined"
             name="tel"
             value={formData.tel}
             onChange={handleChange}
@@ -214,24 +216,24 @@ export default function Form() {
         <CardActions sx={{ p: 3, justifyContent: "center" }}>
           <Button
             variant="contained"
-            color="success"
             fullWidth
             onClick={handleSubmit}
             sx={{
               textTransform: "none",
               fontWeight: "bold",
+              bgcolor: "#53adbe",
             }}
           >
             Submit
           </Button>
           <Button
             variant="contained"
-            color="error"
             fullWidth
             onClick={handleReset}
             sx={{
               textTransform: "none",
               fontWeight: "bold",
+              bgcolor: "#616264",
             }}
           >
             Reset
