@@ -7,14 +7,14 @@ import {
   CardContent,
   TextField,
   Typography,
+  Alert,
+  Avatar,
 } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useGlobalState } from "@/utils/providers/GlobalStateContext";
-import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import dayjs from "dayjs";
 
 export default function Form() {
@@ -26,8 +26,6 @@ export default function Form() {
     globalFormData.birthDate === "" ||
     globalFormData.tel === "" ||
     globalFormData.img === null;
-
-  console.log(isGlobalFormDataEmpty);
 
   return (
     <Box
