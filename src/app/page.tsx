@@ -15,7 +15,7 @@ export default function Home() {
         />
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
-            profile input form at
+            form input profil di
             <Link href={"/form"}>
               <code className="bg-black/[.05] dark:bg-white/[.06] px-1 rounded font-semibold underline hover:text-blue-700 ">
                 /form
@@ -24,7 +24,7 @@ export default function Home() {
             .
           </li>
           <li className="mb-2">
-            results at
+            hasil input ada di
             <Link href={"/about"}>
               <code className="bg-black/[.05] dark:bg-white/[.06] px-1 rounded font-semibold underline hover:text-blue-700 ">
                 /about

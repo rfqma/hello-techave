@@ -7,6 +7,7 @@ import {
   CardContent,
   Button,
   TextField,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -182,6 +183,9 @@ export default function Form() {
             onChange={handleChange}
             disabled
           />
+          <Typography variant="body2" color="info">
+            * Pilih tanggal lahir untuk menghitung umur
+          </Typography>
 
           <Button
             component="label"
